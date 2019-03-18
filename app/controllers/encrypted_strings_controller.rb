@@ -26,7 +26,7 @@ class EncryptedStringsController < ApplicationController
   def load_encrypted_string
     @encrypted_string = EncryptedString.find_by(token: params[:token])
     if @encrypted_string.nil?
-      render json: { messsage: "No entry found for token #{params[:token]}" },
+      render json: { message: "No entry found for token #{params[:token]}" },
              status: :not_found
     end
   end
