@@ -16,6 +16,25 @@ class EncryptedString < ActiveRecord::Base
     data_encrypting_key.encrypted_key
   end
 
+  # Use find_each since it does batch processing 
+  # for 1000 records. Gets all the records that 
+  # are not using the new key and recrypts them all.
+  def self.re_encrypt_all(new_key)
+    EncryptedString.where("data_encrypting_key_id != ?", new_key.id)
+                   .find_each do |encrypted_string|
+      encrypted_string.reencrypt(new_key)
+    end
+  end
+
+  # Updates the key with the new key and passes
+  # the unencrypted value to the update method
+  # so that the value gets encrypted with the new 
+  # key.
+  def reencrypt(new_key)
+    update!(data_encrypting_key: new_key,
+            value: value)
+  end
+
   private
 
   def encryption_key
