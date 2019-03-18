@@ -3,8 +3,8 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   resources :encrypted_strings, param: :token
 
-  post 'data_encrypting_keys/rotate'
-  get 'data_encrypting_keys/rotate/status'
+  get 'data_encrypting_keys/rotate/status' => 'data_encrypting_keys#status'
+  post 'data_encrypting_keys/rotate' => 'data_encrypting_keys#rotate'
 
   mount Sidekiq::Web, at: '/sidekiq'
   # The priority is based upon order of creation: first created -> highest priority.

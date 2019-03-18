@@ -7,7 +7,11 @@ class DataEncryptingKey < ActiveRecord::Base
   validates :key, presence: true
 
   def self.primary
-    find_by(primary: true)
+    primary_key = find_by(primary: true)
+    if primary_key.nil?
+      primary_key = DataEncryptingKey.generate!(primary: true)
+    end
+    primary_key
   end
 
   def self.generate!(attrs={})
