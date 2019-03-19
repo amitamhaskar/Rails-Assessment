@@ -22,7 +22,7 @@ class EncryptedString < ActiveRecord::Base
   def self.re_encrypt_all(new_key)
     EncryptedString.where("data_encrypting_key_id != ?", new_key.id)
                    .find_each do |encrypted_string|
-      encrypted_string.reencrypt(new_key)
+      encrypted_string.reencrypt!(new_key)
     end
   end
 
@@ -30,8 +30,8 @@ class EncryptedString < ActiveRecord::Base
   # the unencrypted value to the update method
   # so that the value gets encrypted with the new 
   # key.
-  def reencrypt(new_key)
-    update!(data_encrypting_key: new_key,
+  def reencrypt!(new_key)
+    update!(data_encrypting_key_id: new_key.id,
             value: value)
   end
 

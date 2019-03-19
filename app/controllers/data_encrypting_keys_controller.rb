@@ -2,8 +2,7 @@ class DataEncryptingKeysController < ApplicationController
   def rotate
     if RotateKeyJobs.add_new?
       RotateKeysWorker.perform_async('rotate')
-      render json: { message: "Successfully queued job for key rotation at #{DateTime.now}" },
-             status: :ok
+      render json: { message: "Successfully queued job for key rotation at #{DateTime.now}" }
     else
       render json: { message: "Cannot schedule a new key rotation at "\
                               "this time due to a previous scheduled "\
@@ -14,6 +13,6 @@ class DataEncryptingKeysController < ApplicationController
   end
 
   def status
-    render json: { status: RotateKeyJobs.get_status_message }    
+    render json: { message: RotateKeyJobs.get_status_message }    
   end
 end

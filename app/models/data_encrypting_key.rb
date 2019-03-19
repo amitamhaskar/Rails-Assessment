@@ -41,6 +41,20 @@ class DataEncryptingKey < ActiveRecord::Base
     end
   end
 
+  def self.rotate_key
+    # Generate a new primary key and mark old key
+    # as primary: false
+    DataEncryptingKey.generate_new_primary
+
+    # For each encrypted string not using current 
+    # primary key, decrypt the string and encrypt 
+    # using new primary key
+    EncryptedString.re_encrypt_all(DataEncryptingKey.primary)
+
+    # Delete any unused primary: false keys
+    DataEncryptingKey.delete_unused_keys
+  end
+  
   def key_encrypting_key
     ENV['KEY_ENCRYPTING_KEY']
   end
