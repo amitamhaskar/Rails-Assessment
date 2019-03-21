@@ -1,26 +1,28 @@
 require 'test_helper'
+require 'sidekiq/testing'
 
 class DataEncryptingKeysControllerTest < ActionController::TestCase
 
   def setup
+    Sidekiq::Testing.fake!
     @data_encrypting_key = DataEncryptingKey.generate!(primary: true)
   end
 
-  test "POST #rotate returns error when called twice" do
-    post :rotate
+  test "POST #rotate return success when queue empty" do
+    Sidekiq::Worker.clear_all
     post :rotate
 
-    assert_response :conflict
+    assert_response :success
 
     json = JSON.parse(response.body)
-    assert json["message"].include?("Cannot schedule a new key rotation at")
+    assert json["message"].include?("Successfully queued job for key rotation")
   end
 
-  test "GET #status returns job enqueued when rotate called once" do
-    post :rotate
+  test "GET #status " do
     get :status
 
+    assert_response :success
     json = JSON.parse(response.body)
-    assert_equal "Key rotation has been queued", json["message"]
+    assert json["message"].include?("rotation")
   end
 end
