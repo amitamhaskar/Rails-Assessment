@@ -9,7 +9,10 @@ class EncryptedString < ActiveRecord::Base
   validates :data_encrypting_key, presence: true
   validates :value, presence: true
 
-  before_validation :set_token, :set_data_encrypting_key
+  before_validation(on: :create) do
+    set_token 
+    set_data_encrypting_key
+  end
 
   def encrypted_encryption_key
     self.data_encrypting_key ||= DataEncryptingKey.primary

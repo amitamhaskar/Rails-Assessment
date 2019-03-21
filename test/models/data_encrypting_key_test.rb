@@ -30,6 +30,7 @@ class DataEncryptingKeyTest < ActiveSupport::TestCase
 
   test "rotate_key" do
     old_key_id = DataEncryptingKey.primary.id
+
     # Create 2 encrypted strings
     encrypted_string1 = EncryptedString.create!(value: "Test string for rotate 1")
     encrypted_string2 = EncryptedString.create!(value: "Test string for rotate 2")
@@ -58,6 +59,6 @@ class DataEncryptingKeyTest < ActiveSupport::TestCase
     assert_equal "Test string for rotate 2", encrypted_string.value
 
     # Make sure the old unused keys are deleted
-    assert DataEncryptingKey.find(old_key_id).nil?
+    assert_equal 0, DataEncryptingKey.where(id: old_key_id).count
   end
 end
