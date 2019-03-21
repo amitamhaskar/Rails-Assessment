@@ -1,2 +1,5 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
+# It is better to let the gem generate iv values 
+# rather than adding them explicitly. So no need of
+# adding fixtures for encrypted_string and 
+# data_encrypting_keys.
